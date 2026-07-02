@@ -11,9 +11,13 @@ trustPolicyExclude:
 
 onlyBuiltDependencies:
   - esbuild
+  - workerd
 
 # 公開直後の侵害された可能性のあるリリースを避けるため、公開から1日（1440分）経過したバージョンのみ許可する
 minimumReleaseAge: 1440
 
 allowBuilds:
+  esbuild: true
   msgpackr-extract: false
+  sharp: false
+  workerd: true
