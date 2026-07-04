@@ -12,10 +12,12 @@ export interface PartRenderContext {
 }
 
 interface ChatShellProps {
-  mode: "static" | "declarative" | "open-ended";
+  mode: "static" | "declarative" | "open-ended" | "open-ended-openui";
   title: string;
   tagline: string;
   suggestions: string[];
+  /** header の tagline 下に差し込む任意 UI (モード切替トグルなど)。 */
+  headerExtra?: ReactNode;
   /** text 以外のメッセージパートの描画。null を返すとそのパートは非表示。 */
   renderPart: (part: UIMessage["parts"][number], context: PartRenderContext) => ReactNode;
   /** アシスタントの text パートの描画を差し替える (省略時はプレーンテキスト)。 */
@@ -43,6 +45,7 @@ export function ChatShell({
   title,
   tagline,
   suggestions,
+  headerExtra,
   renderPart,
   renderTextPart,
 }: ChatShellProps) {
@@ -77,7 +80,7 @@ export function ChatShell({
                 to={entry.to}
                 className={cn(
                   "rounded-full px-3 py-1 text-xs font-medium text-slate-500 hover:text-slate-800",
-                  entry.mode === mode && "bg-white text-slate-900 shadow-sm",
+                  mode.startsWith(entry.mode) && "bg-white text-slate-900 shadow-sm",
                 )}
               >
                 {entry.label}
@@ -86,6 +89,7 @@ export function ChatShell({
           </nav>
         </div>
         <p className="mt-1 text-xs text-slate-500">{tagline}</p>
+        {headerExtra}
       </header>
 
       <main className="flex-1 space-y-6 py-6">

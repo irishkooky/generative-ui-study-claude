@@ -83,6 +83,7 @@ vp run deploy
 `/open-ended` の4ページと実際のチャット動作 (本物の API キーでの応答) を確認する。
 
 **確認ポイント:**
+
 - `/static`: 「来月の3連休に京都へ2泊3日で行きたい」等を送って天気・旅程・予算カードが出るか
 - `/declarative`: 「北海道旅行の計画をダッシュボードにまとめて」等を送って JSON UI が描画されるか。
   actions セクションのボタンを押すとチャットに新しいメッセージが送られるか
@@ -102,11 +103,11 @@ gh pr create --title "Generative UI 学習アプリを追加" --base main \
 マージ後、CI (`.github/workflows/deploy.yml`) を使った自動デプロイに切り替えるなら、
 GitHub リポジトリの Settings → Secrets and variables → Actions に以下を登録する:
 
-| Secret | 内容 |
-|---|---|
-| `CLOUDFLARE_API_TOKEN` | Workers 編集権限のある API トークン (Cloudflare ダッシュボードで発行) |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare アカウント ID |
-| `ANTHROPIC_API_KEY` | Claude API キー (Worker シークレットとして同期される) |
+| Secret                  | 内容                                                                  |
+| ----------------------- | --------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Workers 編集権限のある API トークン (Cloudflare ダッシュボードで発行) |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare アカウント ID                                              |
+| `ANTHROPIC_API_KEY`     | Claude API キー (Worker シークレットとして同期される)                 |
 
 これで `main` に push するたびに自動ビルド・自動デプロイされる。
 

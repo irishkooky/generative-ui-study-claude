@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StaticRouteImport } from './routes/static'
+import { Route as OpenUiRouteImport } from './routes/open-ui'
 import { Route as OpenEndedRouteImport } from './routes/open-ended'
 import { Route as DeclarativeRouteImport } from './routes/declarative'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,6 +19,11 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 const StaticRoute = StaticRouteImport.update({
   id: '/static',
   path: '/static',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpenUiRoute = OpenUiRouteImport.update({
+  id: '/open-ui',
+  path: '/open-ui',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OpenEndedRoute = OpenEndedRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/declarative': typeof DeclarativeRoute
   '/open-ended': typeof OpenEndedRoute
+  '/open-ui': typeof OpenUiRoute
   '/static': typeof StaticRoute
   '/api/chat': typeof ApiChatRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/declarative': typeof DeclarativeRoute
   '/open-ended': typeof OpenEndedRoute
+  '/open-ui': typeof OpenUiRoute
   '/static': typeof StaticRoute
   '/api/chat': typeof ApiChatRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/declarative': typeof DeclarativeRoute
   '/open-ended': typeof OpenEndedRoute
+  '/open-ui': typeof OpenUiRoute
   '/static': typeof StaticRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/declarative' | '/open-ended' | '/static' | '/api/chat'
+  fullPaths:
+    | '/'
+    | '/declarative'
+    | '/open-ended'
+    | '/open-ui'
+    | '/static'
+    | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/declarative' | '/open-ended' | '/static' | '/api/chat'
+  to:
+    | '/'
+    | '/declarative'
+    | '/open-ended'
+    | '/open-ui'
+    | '/static'
+    | '/api/chat'
   id:
     | '__root__'
     | '/'
     | '/declarative'
     | '/open-ended'
+    | '/open-ui'
     | '/static'
     | '/api/chat'
   fileRoutesById: FileRoutesById
@@ -81,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DeclarativeRoute: typeof DeclarativeRoute
   OpenEndedRoute: typeof OpenEndedRoute
+  OpenUiRoute: typeof OpenUiRoute
   StaticRoute: typeof StaticRoute
   ApiChatRoute: typeof ApiChatRoute
 }
@@ -92,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/static'
       fullPath: '/static'
       preLoaderRoute: typeof StaticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/open-ui': {
+      id: '/open-ui'
+      path: '/open-ui'
+      fullPath: '/open-ui'
+      preLoaderRoute: typeof OpenUiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/open-ended': {
@@ -129,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeclarativeRoute: DeclarativeRoute,
   OpenEndedRoute: OpenEndedRoute,
+  OpenUiRoute: OpenUiRoute,
   StaticRoute: StaticRoute,
   ApiChatRoute: ApiChatRoute,
 }
