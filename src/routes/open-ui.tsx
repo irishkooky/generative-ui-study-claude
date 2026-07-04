@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/open-ui")({
   component: OpenUIPage,
@@ -38,8 +38,9 @@ function OpenUIPage() {
           Open UI 比較: 自前実装 vs ネイティブ
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          Open UI は W3C コミュニティグループで推進されるイニシアティブで、popover
-          属性、&lt;dialog&gt;、&lt;details&gt; などの機能をブラウザ標準にしています。従来の React
+          Open UI は W3C コミュニティグループで推進されるイニシアティブで、popover 属性、Invoker
+          Commands (command/commandfor)、&lt;dialog&gt;、&lt;details&gt;
+          などの機能をブラウザ標準にしています。従来の React
           自前実装との違いを同一ページで比較できます。
         </p>
       </div>
@@ -71,8 +72,10 @@ function OpenUIPage() {
             <div className="mt-4 border-t border-slate-100 pt-4">
               <p className="text-xs font-medium text-slate-500 uppercase">解説</p>
               <p className="mt-1 text-xs text-slate-600">
-                JavaScript ゼロ。popover=&quot;auto&quot; と popoverTarget
-                により、light-dismiss(外側クリック)と Esc が自動で有効。管理コードなし。
+                JavaScript ゼロ。popover=&quot;auto&quot; と Invoker Commands (commandfor +
+                command=&quot;toggle-popover&quot;) により、light-dismiss(外側クリック)と Esc
+                が自動で有効。旧 popovertarget 属性は commandfor
+                に置き換えられ、将来的に非推奨予定。
               </p>
             </div>
           </div>
@@ -105,8 +108,10 @@ function OpenUIPage() {
             <div className="mt-4 border-t border-slate-100 pt-4">
               <p className="text-xs font-medium text-slate-500 uppercase">解説</p>
               <p className="mt-1 text-xs text-slate-600">
-                &lt;dialog&gt; + useRef で ref.current?.showModal()。::backdrop、フォーカス管理、Esc
-                が標準。スクロール抑止も自動。
+                JavaScript ゼロ。&lt;dialog&gt; + Invoker Commands (commandfor +
+                command=&quot;show-modal&quot; / &quot;close&quot;)
+                で宣言的に開閉。::backdrop、フォーカス管理、Esc が標準。closedby=&quot;any&quot;
+                で外側クリックによる light-dismiss も宣言的に有効化。
               </p>
             </div>
           </div>
@@ -169,7 +174,7 @@ function OpenUIPage() {
                 <td className="px-3 py-2 font-semibold text-slate-900">JavaScript 量</td>
                 <td className="px-3 py-2 text-slate-600">多い (状態管理、イベント、DOM 操作)</td>
                 <td className="px-3 py-2 text-slate-600">
-                  ゼロまたは最小限 (showModal/close など)
+                  ゼロ (command/commandfor で宣言的に開閉)
                 </td>
               </tr>
               <tr>
@@ -187,7 +192,9 @@ function OpenUIPage() {
                   Light-dismiss (外側クリック)
                 </td>
                 <td className="px-3 py-2 text-slate-600">onClick/useClickOutside で実装</td>
-                <td className="px-3 py-2 text-slate-600">popover=&quot;auto&quot; で自動</td>
+                <td className="px-3 py-2 text-slate-600">
+                  popover=&quot;auto&quot; / dialog closedby=&quot;any&quot; で自動
+                </td>
               </tr>
               <tr>
                 <td className="px-3 py-2 font-semibold text-slate-900">アクセシビリティ</td>
@@ -198,7 +205,8 @@ function OpenUIPage() {
                 <td className="px-3 py-2 font-semibold text-slate-900">ブラウザ対応</td>
                 <td className="px-3 py-2 text-slate-600">すべてのブラウザ</td>
                 <td className="px-3 py-2 text-slate-600">
-                  popover/dialog/details は主要ブラウザ対応済み
+                  popover/dialog/details に加え、command/commandfor も全主要ブラウザで Baseline 達成
+                  (Chrome 135 / Firefox 144 / Safari 26.2)
                 </td>
               </tr>
               <tr>
@@ -216,8 +224,11 @@ function OpenUIPage() {
       {/* Footer Note */}
       <footer className="border-t border-slate-200 pt-6 text-xs text-slate-500">
         <p>
-          注: customizable &lt;select&gt; (appearance: base-select) は現状 Chromium
-          系ブラウザのみ対応のため、このページではデモではなく注記のみとしています。
+          注: customizable &lt;select&gt; (appearance: base-select) は Chromium (Chrome 135+) と
+          Safari 27 が対応済み、Firefox
+          は開発中のため、このページではデモではなく注記のみとしています。 また dialog の closedby
+          属性はまだ Baseline
+          ではないため、プログレッシブエンハンスメントとして使用しています(未対応ブラウザでは単に無視されます)。
         </p>
       </footer>
     </main>
@@ -260,7 +271,8 @@ function OpenUIPopover() {
     <div>
       <button
         type="button"
-        popoverTarget="tip-weather"
+        commandfor="tip-weather"
+        command="toggle-popover"
         className="rounded-lg bg-indigo-100 px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200"
       >
         天気情報を表示
@@ -322,27 +334,19 @@ function TraditionalDialog() {
 
 // ============ Open UI Dialog ============
 function OpenUIDialog() {
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-
-  const handleOpen = () => {
-    dialogRef.current?.showModal();
-  };
-
-  const handleClose = () => {
-    dialogRef.current?.close();
-  };
-
   return (
     <div>
       <button
         type="button"
-        onClick={handleOpen}
+        commandfor="booking-dialog"
+        command="show-modal"
         className="rounded-lg bg-indigo-100 px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200"
       >
         予約を確認
       </button>
       <dialog
-        ref={dialogRef}
+        id="booking-dialog"
+        closedby="any"
         className="m-auto rounded-2xl border border-slate-200 p-6 shadow-lg backdrop:bg-slate-900/50"
         aria-label="予約確認"
       >
@@ -353,14 +357,16 @@ function OpenUIDialog() {
         <div className="mt-4 flex gap-2">
           <button
             type="button"
-            onClick={handleClose}
+            commandfor="booking-dialog"
+            command="close"
             className="flex-1 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
           >
             確認
           </button>
           <button
             type="button"
-            onClick={handleClose}
+            commandfor="booking-dialog"
+            command="close"
             className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             キャンセル
