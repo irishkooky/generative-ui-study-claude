@@ -97,6 +97,27 @@ function Home() {
         ))}
       </div>
 
+      <Link
+        to="/open-ui"
+        className="mt-6 block rounded-2xl border border-dashed border-slate-300 bg-white p-5 transition hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
+      >
+        <div className="flex items-center gap-3">
+          <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+            番外編
+          </span>
+          <span className="text-lg font-bold text-slate-900">Open UI 比較</span>
+          <span className="ml-auto text-slate-300">→</span>
+        </div>
+        <p className="mt-2 text-sm font-medium text-slate-800">
+          自前実装 vs ブラウザ標準 (popover / dialog / details)
+        </p>
+        <p className="mt-1 text-sm leading-relaxed text-slate-500">
+          W3C Open UI 発のネイティブ機能を使った場合と使わない場合で、同じ UI
+          の実装がどう変わるかを並べて比較する。Level 3 には生成 HTML に Open UI
+          を使わせるトグルも追加。
+        </p>
+      </Link>
+
       <footer className="mt-12 border-t border-slate-200 pt-4 text-xs text-slate-400">
         学習用プロジェクト。各モードの実装は README の学習メモを参照。
       </footer>
