@@ -1,3 +1,7 @@
+import "@openuidev/react-ui/components.css";
+import { Renderer } from "@openuidev/react-lang";
+import { ThemeProvider } from "@openuidev/react-ui";
+import { openuiChatLibrary } from "@openuidev/react-ui/genui-lib";
 import { createFileRoute } from "@tanstack/react-router";
 import { cn } from "cnfast";
 import { useState } from "react";
@@ -12,7 +16,7 @@ export const Route = createFileRoute("/open-ended")({
 
 function OpenEndedPage() {
   const [openUi, setOpenUi] = useState(false);
-  const mode = openUi ? ("open-ended-openui" as const) : ("open-ended" as const);
+  const mode = openUi ? ("openui" as const) : ("open-ended" as const);
 
   // React Compiler がキャッシュするため手動メモ化は不要 (変数化は jsx-no-jsx-as-prop 対策)
   const headerExtra = (
@@ -29,12 +33,12 @@ function OpenEndedPage() {
             : "border-slate-300 bg-white text-slate-500 hover:text-slate-700",
         )}
       >
-        Open UI モード: {openUi ? "ON" : "OFF"}
+        OpenUI モード: {openUi ? "ON" : "OFF"}
       </button>
       <span className="text-xs text-slate-400">
         {openUi
-          ? "popover / <dialog> / <details> などブラウザ標準機能を優先して生成させる (切替でチャットはリセット)"
-          : "ON にすると、自前 JS の代わりに Open UI 系の標準機能を使うよう AI に指示する"}
+          ? "AI が OpenUI Lang を出力し、公式 Renderer が React コンポーネントとして描画する (切替でチャットはリセット)"
+          : "ON にすると、生 HTML の代わりに OpenUI (openui.com) の DSL + Renderer で UI を生成する"}
       </span>
     </div>
   );
@@ -55,7 +59,23 @@ function OpenEndedPage() {
         "旅程の各日をタップで開閉でき、注意事項をポップオーバーで出せるしおりを作って",
       ]}
       renderPart={() => null}
-      renderTextPart={(text, streaming) => {
+      renderTextPart={(text, streaming, { send }) => {
+        if (openUi) {
+          // OpenUI モード: 応答全体が OpenUI Lang コードなので Renderer に渡す。
+          // アクション (フォローアップ等) はそのままチャット送信につなぐ
+          return (
+            <ThemeProvider mode="light">
+              <Renderer
+                response={text}
+                library={openuiChatLibrary}
+                isStreaming={streaming}
+                onAction={(event) => {
+                  send(event.humanFriendlyMessage);
+                }}
+              />
+            </ThemeProvider>
+          );
+        }
         const { html, prose } = extractHtml(text);
         return (
           <div className="space-y-3">
