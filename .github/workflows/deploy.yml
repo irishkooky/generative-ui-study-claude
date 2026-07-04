@@ -16,6 +16,9 @@ jobs:
       PNPM_CONFIG_TRUST_LOCKFILE: "true"
     steps:
       - uses: actions/checkout@v4
+      # wrangler-action が package.json の packageManager (pnpm) を検出して
+      # pnpm で wrangler を入れるため、PATH に pnpm を用意しておく
+      - uses: pnpm/action-setup@v4
       - uses: voidzero-dev/setup-vp@v1
         with:
           node-version-file: .node-version
