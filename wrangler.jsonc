@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "generative-ui-study",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "observability": {
+    "enabled": true,
+  },
+  // ANTHROPIC_API_KEY はシークレットとして登録する:
+  //   ローカル: .dev.vars に記述
+  //   本番:     wrangler secret put ANTHROPIC_API_KEY
+}

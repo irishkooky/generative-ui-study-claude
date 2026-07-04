@@ -1,3 +1,4 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -9,6 +10,10 @@ const reactDoctorRules = {
   ...RECOMMENDED_RULES,
   ...TANSTACK_START_RULES,
 };
+
+// Cloudflare プラグインは vitest のサーバー環境 (resolve.external) と競合するため
+// テスト実行時は外す
+const isTest = process.env.VITEST === "true";
 
 export default defineConfig({
   fmt: {
@@ -64,6 +69,7 @@ export default defineConfig({
   },
   plugins: [
     tailwindcss(),
+    ...(isTest ? [] : [cloudflare({ viteEnvironment: { name: "ssr" } })]),
     tanstackStart(),
     // react's vite plugin must come after start's vite plugin
     react(),

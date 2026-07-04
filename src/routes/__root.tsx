@@ -20,7 +20,11 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { content: "width=device-width, initial-scale=1", name: "viewport" },
-      { title: "TanStack Start Template" },
+      { title: "Generative UI Study — 3つのアプローチで学ぶ" },
+      {
+        content: "Static / Declarative / Open-Ended の3方式で Generative UI を体験する学習アプリ",
+        name: "description",
+      },
     ],
   }),
   notFoundComponent: NotFoundComponent,
@@ -33,7 +37,7 @@ function RootComponent() {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-slate-50 text-slate-900 antialiased">
         <Outlet />
         {TanStackRouterDevtools ? (
           <Suspense fallback={null}>

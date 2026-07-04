@@ -10,6 +10,11 @@ dist
 .cursor
 .agents/skills
 
+# cloudflare
+.wrangler
+.dev.vars
+worker-configuration.d.ts
+
 # environment variable files
 .env
 .env.development.local

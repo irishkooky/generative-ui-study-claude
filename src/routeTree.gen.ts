@@ -9,38 +9,105 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StaticRouteImport } from './routes/static'
+import { Route as OpenEndedRouteImport } from './routes/open-ended'
+import { Route as DeclarativeRouteImport } from './routes/declarative'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const StaticRoute = StaticRouteImport.update({
+  id: '/static',
+  path: '/static',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpenEndedRoute = OpenEndedRouteImport.update({
+  id: '/open-ended',
+  path: '/open-ended',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeclarativeRoute = DeclarativeRouteImport.update({
+  id: '/declarative',
+  path: '/declarative',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/declarative': typeof DeclarativeRoute
+  '/open-ended': typeof OpenEndedRoute
+  '/static': typeof StaticRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/declarative': typeof DeclarativeRoute
+  '/open-ended': typeof OpenEndedRoute
+  '/static': typeof StaticRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/declarative': typeof DeclarativeRoute
+  '/open-ended': typeof OpenEndedRoute
+  '/static': typeof StaticRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/declarative' | '/open-ended' | '/static' | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/declarative' | '/open-ended' | '/static' | '/api/chat'
+  id:
+    | '__root__'
+    | '/'
+    | '/declarative'
+    | '/open-ended'
+    | '/static'
+    | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeclarativeRoute: typeof DeclarativeRoute
+  OpenEndedRoute: typeof OpenEndedRoute
+  StaticRoute: typeof StaticRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/static': {
+      id: '/static'
+      path: '/static'
+      fullPath: '/static'
+      preLoaderRoute: typeof StaticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/open-ended': {
+      id: '/open-ended'
+      path: '/open-ended'
+      fullPath: '/open-ended'
+      preLoaderRoute: typeof OpenEndedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/declarative': {
+      id: '/declarative'
+      path: '/declarative'
+      fullPath: '/declarative'
+      preLoaderRoute: typeof DeclarativeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +115,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeclarativeRoute: DeclarativeRoute,
+  OpenEndedRoute: OpenEndedRoute,
+  StaticRoute: StaticRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,4 @@
+# ローカル開発用の環境変数。`.dev.vars` にコピーして値を設定する。
+ANTHROPIC_API_KEY=sk-ant-...
+# 省略時は claude-opus-4-8 を使用
+# AI_MODEL=claude-haiku-4-5
