@@ -53,13 +53,13 @@ AI が完全な HTML ドキュメントを生成し、クライアントは ifra
 - **安全境界は iframe の `sandbox="allow-scripts"`** (same-origin なし)。生成コードはアプリの DOM・Cookie・ストレージへアクセスできない
 - 自由度は最大だが、デザインの一貫性・品質・アクセシビリティは AI 任せになることを体験できる
 
-## 番外編: Open UI 比較 — `/open-ui`
+## 番外編: ブラウザ標準 UI 比較 — `/open-ui`
 
-[Open UI](https://open-ui.org/) は、ポップオーバーやセレクトなどよくある UI パターンを
-「ライブラリの自前実装」ではなく**ブラウザ標準機能**として使えるようにする W3C コミュニティグループの取り組み。
-このプロジェクトに導入した場合と導入しない場合の違いを 2 か所で比較できる。
+[W3C Open UI](https://open-ui.org/) は、ポップオーバーやセレクトなどよくある UI パターンを
+「ライブラリの自前実装」ではなく**ブラウザ標準機能**として使えるようにする W3C コミュニティグループの取り組み
+(openui.com の OpenUI フレームワークとは別物)。
 
-### 1. `/open-ui` — 手書き UI での比較
+### `/open-ui` — 手書き UI での比較
 
 同じ 3 つのウィジェットを「従来: React 自前実装」と「Open UI: ネイティブ」で並べて表示する。
 
@@ -71,13 +71,23 @@ AI が完全な HTML ドキュメントを生成し、クライアントは ifra
 
 なお customizable `<select>` (`appearance: base-select`) は現状 Chromium 系のみの対応のため、注記だけに留めている。
 
-### 2. Level 3 の「Open UI モード」トグル — 生成 UI での比較
+## Level 3 の「OpenUI モード」トグル — OpenUI (openui.com) での生成
 
-`/open-ended` のヘッダにトグルを追加。ON にすると system prompt で
-「自前 `<script>` の代わりに `popover` / `<dialog>` / `<details>` を使う」よう AI に指示する。
-同じお題 (例: 「旅程の各日をタップで開閉でき、注意事項をポップオーバーで出せるしおり」) を
-ON/OFF で生成させると、**生成コードの JS 量・アクセシビリティ・壊れにくさ**が変わることを体験できる。
-Open-Ended 方式の弱点だった「生成 JS の品質が AI 任せ」問題を、標準機能へ寄せることで軽減できるのがポイント。
+[OpenUI](https://www.openui.com/) は Thesys が開発する generative UI フレームワーク。
+LLM に JSON より最大 67% トークン効率の良いコンパクトな **OpenUI Lang** (DSL) を出力させ、
+公式の React ランタイム (`@openuidev/react-lang` の `<Renderer>`) が
+組み込みコンポーネントライブラリ (`openuiChatLibrary`) として描画する。
+
+`/open-ended` のヘッダのトグルを ON にすると `mode: "openui"` になり:
+
+- **サーバー**: `openuiChatLibrary.prompt({ ...openuiChatPromptOptions, preamble })` で
+  コンポーネント仕様ごと生成した system prompt を使い、AI に OpenUI Lang を出力させる
+- **クライアント**: ストリーミング中のテキストを `<Renderer>` に渡すと
+  部分的な OpenUI Lang も随時描画される。アクション (フォローアップ等) は
+  `onAction` でチャット送信につないでいる
+
+同じお題を ON/OFF で生成させると、生 HTML (Open-Ended) と比べて
+**トークン効率・デザイン一貫性・安全性 (任意 HTML/JS を実行しない)** がどう変わるかを体験できる。
 
 ## アーキテクチャ
 

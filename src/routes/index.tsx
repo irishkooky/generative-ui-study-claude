@@ -35,7 +35,7 @@ const APPROACHES = [
     name: "Open-Ended",
     headline: "AI が HTML/CSS/JS を直接生成する",
     description:
-      "AI が完全な HTML ドキュメントを生成し、sandbox 化した iframe に流し込む。表現は自由だが、品質・一貫性・安全性の制御は最も難しい。",
+      "AI が完全な HTML ドキュメントを生成し、sandbox 化した iframe に流し込む。表現は自由だが、品質・一貫性・安全性の制御は最も難しい。OpenUI (openui.com) の DSL + Renderer で描画する「OpenUI モード」トグル付き。",
     mechanism: "生成 HTML → sandbox iframe",
     pros: "表現の自由度が最大。想定外の要望にも UI で応えられる",
     cons: "デザインの一貫性・品質・安全性の担保が難しい",
@@ -105,16 +105,15 @@ function Home() {
           <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
             番外編
           </span>
-          <span className="text-lg font-bold text-slate-900">Open UI 比較</span>
+          <span className="text-lg font-bold text-slate-900">ブラウザ標準 UI 比較</span>
           <span className="ml-auto text-slate-300">→</span>
         </div>
         <p className="mt-2 text-sm font-medium text-slate-800">
           自前実装 vs ブラウザ標準 (popover / dialog / details)
         </p>
         <p className="mt-1 text-sm leading-relaxed text-slate-500">
-          W3C Open UI 発のネイティブ機能を使った場合と使わない場合で、同じ UI
-          の実装がどう変わるかを並べて比較する。Level 3 には生成 HTML に Open UI
-          を使わせるトグルも追加。
+          W3C Open UI コミュニティグループ発のネイティブ機能を使った場合と使わない場合で、同じ UI
+          の実装がどう変わるかを並べて比較する (openui.com の OpenUI フレームワークとは別物)。
         </p>
       </Link>
 

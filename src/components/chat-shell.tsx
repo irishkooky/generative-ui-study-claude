@@ -12,7 +12,7 @@ export interface PartRenderContext {
 }
 
 interface ChatShellProps {
-  mode: "static" | "declarative" | "open-ended" | "open-ended-openui";
+  mode: "static" | "declarative" | "open-ended" | "openui";
   title: string;
   tagline: string;
   suggestions: string[];
@@ -21,7 +21,7 @@ interface ChatShellProps {
   /** text 以外のメッセージパートの描画。null を返すとそのパートは非表示。 */
   renderPart: (part: UIMessage["parts"][number], context: PartRenderContext) => ReactNode;
   /** アシスタントの text パートの描画を差し替える (省略時はプレーンテキスト)。 */
-  renderTextPart?: (text: string, streaming: boolean) => ReactNode;
+  renderTextPart?: (text: string, streaming: boolean, context: PartRenderContext) => ReactNode;
 }
 
 const MODES = [
@@ -80,7 +80,9 @@ export function ChatShell({
                 to={entry.to}
                 className={cn(
                   "rounded-full px-3 py-1 text-xs font-medium text-slate-500 hover:text-slate-800",
-                  mode.startsWith(entry.mode) && "bg-white text-slate-900 shadow-sm",
+                  // openui モードは /open-ended ページのトグルなので Open-Ended タブを点灯する
+                  (mode === entry.mode || (entry.mode === "open-ended" && mode === "openui")) &&
+                    "bg-white text-slate-900 shadow-sm",
                 )}
               >
                 {entry.label}
@@ -128,7 +130,10 @@ export function ChatShell({
                 if (part.type === "text") {
                   if (part.text.trim() === "") return null;
                   if (renderTextPart) {
-                    const renderedText = renderTextPart(part.text, part.state === "streaming");
+                    const renderedText = renderTextPart(part.text, part.state === "streaming", {
+                      send,
+                      isLast,
+                    });
                     return <div key={`${message.id}-${partIndex}`}>{renderedText}</div>;
                   }
                   return (
