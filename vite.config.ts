@@ -57,6 +57,14 @@ export default defineConfig({
           "react-doctor/only-export-components": "off",
         },
       },
+      {
+        // commandfor/command/closedby は React 19.2 が未対応の標準 HTML 属性。
+        // 小文字属性はそのまま DOM に渡るが react-doctor が未知 prop と誤検知する
+        files: ["src/routes/open-ui.tsx"],
+        rules: {
+          "react-doctor/no-unknown-property": "off",
+        },
+      },
     ],
     plugins: ["react", "react-perf", "import", "jsx-a11y", "promise"],
     rules: {
